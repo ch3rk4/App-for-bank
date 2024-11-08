@@ -1,11 +1,6 @@
-from src.masks import get_mask_account, get_mask_card_number
+#from src.masks import get_mask_account, get_mask_card_number
+from src.widget import mask_account_card
 
-card_number = str(input("Введите номер карты: "))
-account_number = str(input("Введите номер счёта в банке: "))
+card_date = str(input("Введите данные: "))
 
-
-if len(card_number) == 16 and len(account_number) == 20:
-    print(get_mask_card_number(card_number))
-    print(get_mask_account(account_number))
-else:
-    print("Ошшибка в вводе данных")
+print(mask_account_card(card_date))
