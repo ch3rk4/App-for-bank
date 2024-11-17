@@ -1,7 +1,7 @@
 def filter_by_state(operations: list[dict], state: str = "EXECUTED") -> list[dict]:
     """
     Фильтрует список словарей по значению ключа state
-    Filters the list of dicts the val of the state key
+    Filters list of dicts val by state key
     """
     filtered_operations = []
     for operation in operations:
@@ -11,3 +11,11 @@ def filter_by_state(operations: list[dict], state: str = "EXECUTED") -> list[dic
             filtered_operations.append(operation)
 
     return filtered_operations
+
+
+def sort_by_date(operations: list[dict], reverse: bool = True) -> list[dict]:
+    """
+    Сортирует список операций по дате
+    Sorts list ops by date
+    """
+    return sorted(operations, key=lambda x: x["date"], reverse=reverse)
