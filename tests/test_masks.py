@@ -23,3 +23,7 @@ def test_get_mask_account_2(numbers_2):
 
 def test_get_mask_card_number_3(numbers_1):
     assert get_mask_card_number(7000792289606361) == numbers_1
+
+
+def test_get_mask_account_3(numbers_2):
+    assert get_mask_account(73654108430135874305) == numbers_2

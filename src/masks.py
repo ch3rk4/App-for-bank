@@ -15,18 +15,19 @@ def get_mask_card_number(card_number: str or int) -> str:
 
     mask_card = "".join(numbers)
 
-    str_mask_card_number = " ".join(mask_card[i : i + 4] for i in range(0, len(mask_card), 4))
+    mask_card_number = " ".join(mask_card[i : i + 4] for i in range(0, len(mask_card), 4))
 
-    return str_mask_card_number
+    return mask_card_number
 
 
-def get_mask_account(account_number: str) -> str:
+def get_mask_account(account_number: str or int) -> str:
     """Func that masks account's number"""
+    str_account_number = str(account_number)
     ac_numbers = []
 
-    length = len(account_number)
+    length = len(str_account_number)
 
-    for i, ac_number in enumerate(account_number):
+    for i, ac_number in enumerate(str_account_number):
 
         if length - 4 > i:
 
