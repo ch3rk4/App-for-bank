@@ -43,3 +43,7 @@ def test_get_mask_card_number_5(numbers_1):
 
 def  test_get_mask_card_number_6():
     assert get_mask_card_number("7000abc289606361") == "Ошибка ввода"
+
+
+def test_get_mask_account_6():
+    assert get_mask_account("736541abc30135874305") == "Ошибка ввода"

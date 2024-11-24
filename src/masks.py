@@ -33,7 +33,7 @@ def get_mask_account(account_number: str or int) -> str:
     """Func that masks account's number"""
     str_account_number = str(account_number)
 
-    if len(str_account_number) != 20:
+    if len(str_account_number) != 20 or not str_account_number.isdigit():
         return "Ошибка ввода"
     else:
         ac_numbers = []
