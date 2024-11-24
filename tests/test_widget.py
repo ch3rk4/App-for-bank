@@ -19,3 +19,6 @@ def test_mask_account_card_4(error_):
 
 def test_mask_account_card_5(error_):
     assert mask_account_card("Visa Platinum 70007929606361") == error_
+
+def test_mask_account_card_6(error_):
+    assert mask_account_card("70007929606361") == error_

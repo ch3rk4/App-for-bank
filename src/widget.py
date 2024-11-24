@@ -6,7 +6,7 @@ def mask_account_card(user_date: str) -> str:
     last_space = user_date.rfind(" ")
 
     if last_space == -1:
-        return "Ошибка в вводе данных"
+        return "Ошибка ввода"
 
     number = user_date[last_space + 1 :]
 
