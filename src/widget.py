@@ -11,17 +11,11 @@ def mask_account_card(user_date: str) -> str:
     number = user_date[last_space + 1 :]
 
     if "Счет" in user_date or "Счёт" in user_date:
-        if len(number) == 20:
-            n_date = get_mask_account(number)
-            return f"{user_date[:last_space]} {n_date}"
-        else:
-            return "Ошшибка в вводе данных"
+        n_date = get_mask_account(number)
+        return f"{user_date[:last_space]} {n_date}"
     else:
-        if len(number) == 16:
-            n_date = get_mask_card_number(number)
-            return f"{user_date[:last_space]} {n_date}"
-        else:
-            return "Ошшибка в вводе данных"
+        n_date = get_mask_card_number(number)
+        return f"{user_date[:last_space]} {n_date}"
 
 
 def get_date(date: str) -> str:
