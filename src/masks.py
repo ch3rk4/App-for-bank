@@ -1,6 +1,11 @@
 def get_mask_card_number(card_number: str or int) -> str:
     """Func that masks card's number"""
-    str_card_number = str(card_number)
+    s_card_number = str(card_number)
+
+    if " " in s_card_number:
+        str_card_number = s_card_number.replace(" ", "")
+    else:
+        str_card_number = s_card_number
 
     if len(str_card_number) != 16:
         return "Ошибка ввода"
