@@ -27,20 +27,24 @@ def get_mask_card_number(card_number: str or int) -> str:
 def get_mask_account(account_number: str or int) -> str:
     """Func that masks account's number"""
     str_account_number = str(account_number)
-    ac_numbers = []
 
-    length = len(str_account_number)
+    if len(str_account_number) != 20:
+        return "Ошибка ввода"
+    else:
+        ac_numbers = []
 
-    for i, ac_number in enumerate(str_account_number):
+        length = len(str_account_number)
 
-        if length - 4 > i:
+        for i, ac_number in enumerate(str_account_number):
 
-            ac_numbers.append("*")
+            if length - 4 > i:
 
-        else:
+                ac_numbers.append("*")
 
-            ac_numbers.append(ac_number)
+            else:
 
-    mask_ac_numbers = ac_numbers[-6:]
+                ac_numbers.append(ac_number)
 
-    return "".join(mask_ac_numbers)
+        mask_ac_numbers = ac_numbers[-6:]
+
+        return "".join(mask_ac_numbers)

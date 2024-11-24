@@ -32,3 +32,6 @@ def test_get_mask_account_3(numbers_2):
 def test_get_mask_card_number_4():
     assert get_mask_card_number("73654108430135874305") == "Ошибка ввода"
 
+
+def test_get_mask_account_4():
+    assert get_mask_account("7000792289606361") == "Ошибка ввода"
