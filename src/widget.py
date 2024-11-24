@@ -12,7 +12,10 @@ def mask_account_card(user_date: str) -> str:
 
     if "Счет" in user_date or "Счёт" in user_date:
         n_date = get_mask_account(number)
-        return f"{user_date[:last_space]} {n_date}"
+        if "Ошибка ввода" in n_date:
+            return "Ошибка ввода"
+        else:
+            return f"{user_date[:last_space]} {n_date}"
     else:
         n_date = get_mask_card_number(number)
         if "Ошибка ввода" in n_date:

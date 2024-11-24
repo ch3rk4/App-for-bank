@@ -22,3 +22,23 @@ def test_mask_account_card_5(error_):
 
 def test_mask_account_card_6(error_):
     assert mask_account_card("70007929606361") == error_
+
+
+def test_mask_account_card_7():
+    assert mask_account_card("Счёт 73654108430135874305") == "Счёт **4305"
+
+
+def test_mask_account_card_8(error_):
+    assert mask_account_card("Счёт 736541084abc35874305") == error_
+
+
+def test_mask_account_card_9(error_):
+    assert mask_account_card("Счёт 73654108435874305") == error_
+
+
+def test_mask_account_card_10(account_1):
+    assert mask_account_card("Счет 73654108412335874305") == account_1
+
+
+def test_mask_account_card_11(error_):
+    assert mask_account_card("Maestro 7000792 89606361") == error_
