@@ -1,8 +1,9 @@
-def get_mask_card_number(card_number: str) -> str:
+def get_mask_card_number(card_number: str or int) -> str:
     """Func that masks card's number"""
+    str_card_number = str(card_number)
     numbers = []
 
-    for number in card_number:
+    for number in str_card_number:
 
         numbers.append(number)
 
@@ -14,9 +15,9 @@ def get_mask_card_number(card_number: str) -> str:
 
     mask_card = "".join(numbers)
 
-    mask_card_number = " ".join(mask_card[i : i + 4] for i in range(0, len(mask_card), 4))
+    str_mask_card_number = " ".join(mask_card[i : i + 4] for i in range(0, len(mask_card), 4))
 
-    return mask_card_number
+    return str_mask_card_number
 
 
 def get_mask_account(account_number: str) -> str:
