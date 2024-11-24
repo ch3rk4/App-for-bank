@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def filter_by_state(operations: list[dict] = None, state: str = "EXECUTED") -> list[dict]:
+def filter_by_state(operations: list[dict], state: str = "EXECUTED") -> list[dict] | str:
     """
     Фильтрует список словарей по значению ключа state
     Filters list of dicts val by state key
@@ -22,7 +22,7 @@ def filter_by_state(operations: list[dict] = None, state: str = "EXECUTED") -> l
     return filtered_operations
 
 
-def sort_by_date(operations: list[dict], reverse: bool = True) -> list[dict]:
+def sort_by_date(operations: list[dict], reverse: bool = True) -> list[dict] | str:
     """
     Сортирует список операций по дате
     Sorts list ops by date

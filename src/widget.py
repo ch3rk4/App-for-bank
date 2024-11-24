@@ -26,7 +26,7 @@ def mask_account_card(user_date: str) -> str:
             return f"{user_date[:last_space]} {n_date}"
 
 
-def get_date(date: str) -> str:
+def get_date(date: str | int) -> str:
     "Func that shows date like 'DD.MM.YYYY'"
     if not isinstance(date, str):
         return "Ошибка ввода"
