@@ -1,4 +1,5 @@
 from src.masks import get_mask_account, get_mask_card_number
+from datetime import datetime
 
 
 def mask_account_card(user_date: str) -> str:
@@ -26,5 +27,15 @@ def mask_account_card(user_date: str) -> str:
 
 def get_date(date: str) -> str:
     "Func that shows date like 'DD.MM.YYYY'"
-    n_date = date[0:10].split("-")
-    return ".".join(n_date[::-1])
+    if not isinstance(date, str):
+        return "Ошибка ввода"
+    if len(date) != 26 or " " in date:
+        return "Ошибка ввода"
+    try:
+        n_date = date[0:10].split("-")
+        if not (len(n_date[0]) == 4 and len(n_date[1]) == 2 and len(n_date[2]) == 2):
+            return "Ошибка ввода"
+        datetime.strptime(date[0:10], "%Y-%m-%d")
+        return ".".join(n_date[::-1])
+    except (ValueError, IndexError):
+        return "Ошибка ввода"

@@ -23,3 +23,7 @@ def card_2():
 @pytest.fixture
 def account_1():
     return "Счет **4305"
+
+@pytest.fixture
+def date_():
+    return "11.03.2024"
