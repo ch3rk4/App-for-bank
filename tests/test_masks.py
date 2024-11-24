@@ -41,7 +41,7 @@ def test_get_mask_card_number_5(numbers_1):
     assert get_mask_card_number("7000 7922 8960 6361") == numbers_1
 
 
-def  test_get_mask_card_number_6(error_):
+def test_get_mask_card_number_6(error_):
     assert get_mask_card_number("7000abc289606361") == error_
 
 
