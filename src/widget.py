@@ -15,7 +15,10 @@ def mask_account_card(user_date: str) -> str:
         return f"{user_date[:last_space]} {n_date}"
     else:
         n_date = get_mask_card_number(number)
-        return f"{user_date[:last_space]} {n_date}"
+        if "Ошибка ввода" in n_date:
+            return "Ошибка ввода"
+        else:
+            return f"{user_date[:last_space]} {n_date}"
 
 
 def get_date(date: str) -> str:
