@@ -7,3 +7,7 @@ def numbers_1():
 @pytest.fixture
 def numbers_2():
     return "**4305"
+
+@pytest.fixture
+def error_():
+    return "Ошибка ввода"
