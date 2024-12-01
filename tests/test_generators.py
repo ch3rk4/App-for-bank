@@ -1,7 +1,11 @@
-from typing import List, Iterator
+from typing import List, Iterator, Generator, Match, Optional
 import pytest
-from src.generators import filter_by_currency, transaction_descriptions
+from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 from tests.conftest import Transaction
+import re
+from typing_extensions import TypeGuard
+
+CardNumber = str
 
 
 def test_filter_by_currency_returns_iterator(empty_transactions: List[Transaction]) -> None:
@@ -154,3 +158,75 @@ def test_single_transaction() -> None:
 
     result: List[str] = list(transaction_descriptions([single_transaction], "USD"))
     assert result == ["Тестовый перевод"]
+
+
+def is_valid_card_format(card_number: str) -> TypeGuard[CardNumber]:
+    """
+    Проверяет, соответствует ли строка формату номера карты.
+    Используется как охранное выражение типа (type guard).
+    """
+    pattern = r'^\d{4} \d{4} \d{4} \d{4}$'
+    return bool(re.match(pattern, card_number))
+
+
+
+class TestCardNumberGenerator:
+    def test_card_number_format(self) -> None:
+        """Проверяет правильность форматирования номеров карт."""
+        generator: Generator[CardNumber, None, None] = card_number_generator(
+            "0000 0000 0000 0001",
+            "0000 0000 0000 0010"
+        )
+        pattern: str = r'^\d{4} \d{4} \d{4} \d{4}$'
+
+        for card_number in generator:
+            match: Optional[Match[str]] = re.match(pattern, card_number)
+            assert match is not None, f"Неверный формат номера карты: {card_number}"
+            assert len(card_number) == 19, f"Неверная длина номера карты: {card_number}"
+
+    def test_sequential_generation(self) -> None:
+        """Проверяет последовательную генерацию номеров."""
+        start: CardNumber = "0000 0000 0000 0001"
+        end: CardNumber = "0000 0000 0000 0005"
+        generator = card_number_generator(start, end)
+
+        expected: list[CardNumber] = [
+            "0000 0000 0000 0001",
+            "0000 0000 0000 0002",
+            "0000 0000 0000 0003",
+            "0000 0000 0000 0004",
+            "0000 0000 0000 0005"
+        ]
+
+        generated: list[CardNumber] = list(generator)
+        assert generated == expected, "Последовательность номеров не соответствует ожидаемой"
+
+    def test_range_boundaries(self) -> None:
+        """Проверяет корректность обработки граничных значений диапазона."""
+        # Проверка минимального значения
+        min_generator = card_number_generator("0000 0000 0000 0001", "0000 0000 0000 0002")
+        first_number: CardNumber = next(min_generator)
+        assert first_number == "0000 0000 0000 0001"
+
+        # Проверка максимального значения
+        max_generator = card_number_generator("9999 9999 9999 9998", "9999 9999 9999 9999")
+        numbers: list[CardNumber] = list(max_generator)
+        assert numbers[-1] == "9999 9999 9999 9999"
+
+    def test_empty_range(self) -> None:
+        """Проверяет обработку пустого диапазона."""
+        generator = card_number_generator("0000 0000 0000 0002", "0000 0000 0000 0001")
+        with pytest.raises(StopIteration):
+            next(generator)
+
+    def test_invalid_input_format(self) -> None:
+        """Проверяет обработку неверного формата входных данных."""
+        invalid_formats: list[tuple[str, str]] = [
+            ("000 0000 0000 0001", "0000 0000 0000 0002"),  # Неверное количество цифр
+            ("0000-0000-0000-0001", "0000 0000 0000 0002"),  # Неверный разделитель
+            ("abcd efgh ijkl mnop", "0000 0000 0000 0002"),  # Нецифровые символы
+        ]
+
+        for start, end in invalid_formats:
+            with pytest.raises(ValueError):
+                next(card_number_generator(start, end))
