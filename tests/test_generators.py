@@ -1,9 +1,11 @@
-from typing import List, Iterator, Generator, Match, Optional
-import pytest
-from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
-from tests.conftest import Transaction
 import re
+from typing import Generator, Iterator, List, Match, Optional
+
+import pytest
 from typing_extensions import TypeGuard
+
+from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
+from tests.conftest import Transaction
 
 CardNumber = str
 
@@ -55,12 +57,9 @@ def test_filter_by_currency_preserves_transaction_data(single_usd_transaction: T
     """
     Проверяет, что функция сохраняет все данные транзакции.
     """
-    usd_transactions: List[Transaction] = list(
-        filter_by_currency([single_usd_transaction], "USD")
-    )
+    usd_transactions: List[Transaction] = list(filter_by_currency([single_usd_transaction], "USD"))
 
-    expected_keys = {"id", "state", "date", "operationAmount",
-                     "description", "from_", "to"}
+    expected_keys = {"id", "state", "date", "operationAmount", "description", "from_", "to"}
 
     assert all(key in usd_transactions[0] for key in expected_keys)
     assert usd_transactions[0]["state"] == "EXECUTED"
@@ -71,11 +70,7 @@ def test_returns_usd_transaction_descriptions(transaction: List[Transaction]) ->
     """
     Проверяет корректность возврата описаний USD транзакций.
     """
-    expected_descriptions: List[str] = [
-        "Перевод организации",
-        "Перевод со счета на счет",
-        "Перевод с карты на карту"
-    ]
+    expected_descriptions: List[str] = ["Перевод организации", "Перевод со счета на счет", "Перевод с карты на карту"]
     result: List[str] = list(transaction_descriptions(transaction, "USD"))
     assert result == expected_descriptions
 
@@ -84,10 +79,7 @@ def test_returns_rub_transaction_descriptions(transaction: List[Transaction]) ->
     """
     Проверяет корректность возврата описаний RUB транзакций.
     """
-    expected_descriptions: List[str] = [
-        "Перевод со счета на счет",
-        "Перевод организации"
-    ]
+    expected_descriptions: List[str] = ["Перевод со счета на счет", "Перевод организации"]
     result: List[str] = list(transaction_descriptions(transaction, "RUB"))
     assert result == expected_descriptions
 
@@ -115,19 +107,13 @@ def test_returns_iterator_type(transaction: List[Transaction]) -> None:
     Проверяет, что функция возвращает итератор, а не список.
     """
     result: Iterator[str] = transaction_descriptions(transaction, "USD")
-    assert hasattr(result, '__iter__')
+    assert hasattr(result, "__iter__")
     assert not isinstance(result, list)
 
 
-@pytest.mark.parametrize("currency_code,expected_count", [
-    ("USD", 3),
-    ("RUB", 2),
-    ("EUR", 0)
-])
+@pytest.mark.parametrize("currency_code,expected_count", [("USD", 3), ("RUB", 2), ("EUR", 0)])
 def test_transaction_counts_by_currency(
-        transaction: List[Transaction],
-        currency_code: str,
-        expected_count: int
+    transaction: List[Transaction], currency_code: str, expected_count: int
 ) -> None:
     """
     Параметризованный тест для проверки количества транзакций разных валют.
@@ -144,16 +130,10 @@ def test_single_transaction() -> None:
         "id": 939719570,
         "state": "EXECUTED",
         "date": "2018-06-30T02:08:58.425572",
-        "operationAmount": {
-            "amount": "9824.07",
-            "currency": {
-                "name": "USD",
-                "code": "USD"
-            }
-        },
+        "operationAmount": {"amount": "9824.07", "currency": {"name": "USD", "code": "USD"}},
         "description": "Тестовый перевод",
         "from_": "Счет 75106830613657916952",
-        "to": "Счет 11776614605963066702"
+        "to": "Счет 11776614605963066702",
     }
 
     result: List[str] = list(transaction_descriptions([single_transaction], "USD"))
@@ -165,19 +145,17 @@ def is_valid_card_format(card_number: str) -> TypeGuard[CardNumber]:
     Проверяет, соответствует ли строка формату номера карты.
     Используется как охранное выражение типа (type guard).
     """
-    pattern = r'^\d{4} \d{4} \d{4} \d{4}$'
+    pattern = r"^\d{4} \d{4} \d{4} \d{4}$"
     return bool(re.match(pattern, card_number))
-
 
 
 class TestCardNumberGenerator:
     def test_card_number_format(self) -> None:
         """Проверяет правильность форматирования номеров карт."""
         generator: Generator[CardNumber, None, None] = card_number_generator(
-            "0000 0000 0000 0001",
-            "0000 0000 0000 0010"
+            "0000 0000 0000 0001", "0000 0000 0000 0010"
         )
-        pattern: str = r'^\d{4} \d{4} \d{4} \d{4}$'
+        pattern: str = r"^\d{4} \d{4} \d{4} \d{4}$"
 
         for card_number in generator:
             match: Optional[Match[str]] = re.match(pattern, card_number)
@@ -195,7 +173,7 @@ class TestCardNumberGenerator:
             "0000 0000 0000 0002",
             "0000 0000 0000 0003",
             "0000 0000 0000 0004",
-            "0000 0000 0000 0005"
+            "0000 0000 0000 0005",
         ]
 
         generated: list[CardNumber] = list(generator)
