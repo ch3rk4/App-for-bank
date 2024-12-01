@@ -1,6 +1,6 @@
 from typing import List, Iterator
-#import pytest
-from src.generators import filter_by_currency
+import pytest
+from src.generators import filter_by_currency, transaction_descriptions
 from tests.conftest import Transaction
 
 
@@ -63,3 +63,94 @@ def test_filter_by_currency_preserves_transaction_data(single_usd_transaction: T
     assert usd_transactions[0]["description"] == "Перевод организации"
 
 
+def test_returns_usd_transaction_descriptions(transaction: List[Transaction]) -> None:
+    """
+    Проверяет корректность возврата описаний USD транзакций.
+    """
+    expected_descriptions: List[str] = [
+        "Перевод организации",
+        "Перевод со счета на счет",
+        "Перевод с карты на карту"
+    ]
+    result: List[str] = list(transaction_descriptions(transaction, "USD"))
+    assert result == expected_descriptions
+
+
+def test_returns_rub_transaction_descriptions(transaction: List[Transaction]) -> None:
+    """
+    Проверяет корректность возврата описаний RUB транзакций.
+    """
+    expected_descriptions: List[str] = [
+        "Перевод со счета на счет",
+        "Перевод организации"
+    ]
+    result: List[str] = list(transaction_descriptions(transaction, "RUB"))
+    assert result == expected_descriptions
+
+
+def test_handles_empty_transaction_list() -> None:
+    """
+    Проверяет обработку пустого списка транзакций.
+    Функция должна вернуть пустой итератор.
+    """
+    empty_transactions: List[Transaction] = []
+    result: List[str] = list(transaction_descriptions(empty_transactions, "USD"))
+    assert result == []
+
+
+def test_handles_invalid_currency(transaction: List[Transaction]) -> None:
+    """
+    Проверяет обработку несуществующей валюты.
+    """
+    result: List[str] = list(transaction_descriptions(transaction, "EUR"))
+    assert result == []
+
+
+def test_returns_iterator_type(transaction: List[Transaction]) -> None:
+    """
+    Проверяет, что функция возвращает итератор, а не список.
+    """
+    result: Iterator[str] = transaction_descriptions(transaction, "USD")
+    assert hasattr(result, '__iter__')
+    assert not isinstance(result, list)
+
+
+@pytest.mark.parametrize("currency_code,expected_count", [
+    ("USD", 3),
+    ("RUB", 2),
+    ("EUR", 0)
+])
+def test_transaction_counts_by_currency(
+        transaction: List[Transaction],
+        currency_code: str,
+        expected_count: int
+) -> None:
+    """
+    Параметризованный тест для проверки количества транзакций разных валют.
+    """
+    result: List[str] = list(transaction_descriptions(transaction, currency_code))
+    assert len(result) == expected_count
+
+
+def test_single_transaction() -> None:
+    """
+    Проверяет работу функции с одной корректно структурированной транзакцией.
+    """
+    single_transaction: Transaction = {
+        "id": 939719570,
+        "state": "EXECUTED",
+        "date": "2018-06-30T02:08:58.425572",
+        "operationAmount": {
+            "amount": "9824.07",
+            "currency": {
+                "name": "USD",
+                "code": "USD"
+            }
+        },
+        "description": "Тестовый перевод",
+        "from_": "Счет 75106830613657916952",
+        "to": "Счет 11776614605963066702"
+    }
+
+    result: List[str] = list(transaction_descriptions([single_transaction], "USD"))
+    assert result == ["Тестовый перевод"]

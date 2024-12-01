@@ -2,8 +2,11 @@ from typing import Iterator, List
 from tests.conftest import Transaction
 
 def filter_by_currency(transactions: List[Transaction], cur: str) -> Iterator[Transaction]:
+    """
+
+    """
     if not cur.isupper():
-        return iter([])
+        return iter([]) # type: ignore
     for transaction in transactions:
         try:
             if transaction["operationAmount"]["currency"]["code"] == cur:
@@ -12,9 +15,18 @@ def filter_by_currency(transactions: List[Transaction], cur: str) -> Iterator[Tr
             continue
 
 
+def transaction_descriptions(transactions: List[Transaction], cur: str) -> Iterator[str]:
+    """
 
-#def transaction_descriptions():
-
+    """
+    if not cur.isupper():
+        return iter([]) # type: ignore
+    for transaction in transactions:
+        try:
+            if transaction["operationAmount"]["currency"]["code"] == cur:
+                yield transaction["description"]
+        except KeyError:
+            continue
 
 
 #def card_number_generator():
