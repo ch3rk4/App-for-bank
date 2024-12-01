@@ -177,7 +177,7 @@ class TestCardNumberGenerator:
         ]
 
         generated: list[CardNumber] = list(generator)
-        assert generated == expected, "Последовательность номеров не соответствует ожидаемой"
+        assert generated == expected
 
     def test_range_boundaries(self) -> None:
         """Проверяет корректность обработки граничных значений диапазона."""

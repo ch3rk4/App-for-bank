@@ -5,7 +5,9 @@ from tests.conftest import Transaction
 
 
 def filter_by_currency(transactions: List[Transaction], cur: str) -> Iterator[Transaction]:
-    """ """
+    """
+    Функция фильтрует операции по валюте.
+    """
     if not cur.isupper():
         return iter([])  # type: ignore
     for transaction in transactions:
@@ -17,7 +19,9 @@ def filter_by_currency(transactions: List[Transaction], cur: str) -> Iterator[Tr
 
 
 def transaction_descriptions(transactions: List[Transaction], cur: str) -> Iterator[str]:
-    """ """
+    """
+     Функция выводит типы валютных операций.
+    """
     if not cur.isupper():
         return iter([])  # type: ignore
     for transaction in transactions:
@@ -29,6 +33,9 @@ def transaction_descriptions(transactions: List[Transaction], cur: str) -> Itera
 
 
 def card_number_generator(start_: str, end_: str) -> Generator[str, None, None]:
+    """
+    Функция генерирует номер карты
+    """
     pattern = r"^\d{4} \d{4} \d{4} \d{4}$"
     if not re.match(pattern, start_) or not re.match(pattern, end_):
         raise ValueError("Номер карты должен быть в формате 'XXXX XXXX XXXX XXXX'")
