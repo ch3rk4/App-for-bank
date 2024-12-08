@@ -72,12 +72,11 @@ def test_error_file_output(tmp_path: Path) -> None:
     with pytest.raises(IndexError):
         access_invalid_index([1, 2, 3])
 
-    # Добавляем отладочную информацию
     assert log_file.exists(), "Файл лога не был создан"
 
     with open(log_file, "r", encoding="utf-8") as f:
         content = f.read()
-        print(f"Содержимое файла лога:\n{content}")  # Выводим содержимое для отладки
+        print(f"Содержимое файла лога:\n{content}")
 
         expected_error = "access_invalid_index error: list index out of range"
         assert expected_error in content, f"Ожидаемая ошибка '{expected_error}' не найдена в логе"
