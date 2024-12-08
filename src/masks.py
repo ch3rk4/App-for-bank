@@ -1,40 +1,58 @@
-def get_mask_card_number(card_number: str) -> str:
+from typing import Union
+
+
+def get_mask_card_number(card_number: Union[str, int]) -> str:
     """Func that masks card's number"""
-    numbers = []
+    s_card_number = str(card_number)
 
-    for number in card_number:
+    if " " in s_card_number:
+        str_card_number = s_card_number.replace(" ", "")
+    else:
+        str_card_number = s_card_number
 
-        numbers.append(number)
+    if len(str_card_number) != 16 or not str_card_number.isdigit():
+        return "Ошибка ввода"
+    else:
+        numbers = []
 
-    start_index = 6
+        for number in str_card_number:
 
-    end_index = -4
+            numbers.append(number)
 
-    numbers[start_index:end_index] = ["*"] * (len(numbers) + end_index - start_index)
+        start_index = 6
 
-    mask_card = "".join(numbers)
+        end_index = -4
 
-    mask_card_number = " ".join(mask_card[i : i + 4] for i in range(0, len(mask_card), 4))
+        numbers[start_index:end_index] = ["*"] * (len(numbers) + end_index - start_index)
 
-    return mask_card_number
+        mask_card = "".join(numbers)
+
+        mask_card_number = " ".join(mask_card[i : i + 4] for i in range(0, len(mask_card), 4))
+
+        return mask_card_number
 
 
-def get_mask_account(account_number: str) -> str:
+def get_mask_account(account_number: Union[str, int]) -> str:
     """Func that masks account's number"""
-    ac_numbers = []
+    str_account_number = str(account_number)
 
-    length = len(account_number)
+    if len(str_account_number) != 20 or not str_account_number.isdigit():
+        return "Ошибка ввода"
+    else:
+        ac_numbers = []
 
-    for i, ac_number in enumerate(account_number):
+        length = len(str_account_number)
 
-        if length - 4 > i:
+        for i, ac_number in enumerate(str_account_number):
 
-            ac_numbers.append("*")
+            if length - 4 > i:
 
-        else:
+                ac_numbers.append("*")
 
-            ac_numbers.append(ac_number)
+            else:
 
-    mask_ac_numbers = ac_numbers[-6:]
+                ac_numbers.append(ac_number)
 
-    return "".join(mask_ac_numbers)
+        mask_ac_numbers = ac_numbers[-6:]
+
+        return "".join(mask_ac_numbers)
