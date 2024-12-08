@@ -1,7 +1,7 @@
 import pytest
 from typing import Any
 from pathlib import Path
-from decorators import log
+from src.decorators import log
 
 
 def test_successful_console_output(capsys: pytest.CaptureFixture) -> None:
@@ -58,8 +58,8 @@ def test_error_console_output(capsys: pytest.CaptureFixture) -> None:
 
 def test_error_file_output(tmp_path: Path) -> None:
     """
-    Тестирование записи ошибок в файл.
-    """
+        Тестирование записи ошибок в файл.
+        """
     log_file = tmp_path / "error_log.txt"
 
     @log(filename=str(log_file))
@@ -69,11 +69,18 @@ def test_error_file_output(tmp_path: Path) -> None:
     with pytest.raises(IndexError):
         access_invalid_index([1, 2, 3])
 
-    assert log_file.exists()
-    with open(log_file, 'r') as f:
+    # Добавляем отладочную информацию
+    assert log_file.exists(), "Файл лога не был создан"
+
+    with open(log_file, 'r', encoding='utf-8') as f:
         content = f.read()
-        assert "access_invalid_index error: list index out of range" in content
-        assert "Inputs: ([1, 2, 3]), {}" in content
+        print(f"Содержимое файла лога:\n{content}")  # Выводим содержимое для отладки
+
+        expected_error = "access_invalid_index error: list index out of range"
+        assert expected_error in content, f"Ожидаемая ошибка '{expected_error}' не найдена в логе"
+
+        expected_inputs = "Inputs: ([1, 2, 3]), {}"
+        assert expected_inputs in content, f"Ожидаемые входные данные '{expected_inputs}' не найдены в логе"
 
 
 def test_decorator_preserves_function_metadata() -> None:
