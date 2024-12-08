@@ -1,6 +1,8 @@
-import pytest
-from typing import Any
 from pathlib import Path
+from typing import Any
+
+import pytest
+
 from src.decorators import log
 
 
@@ -8,6 +10,7 @@ def test_successful_console_output(capsys: pytest.CaptureFixture) -> None:
     """
     Тестирование успешного вывода в консоль.
     """
+
     @log()
     def add(x: int, y: int) -> int:
         return x + y
@@ -34,7 +37,7 @@ def test_successful_file_output(tmp_path: Path) -> None:
     assert result == 6
     assert log_file.exists()
 
-    with open(log_file, 'r') as f:
+    with open(log_file, "r") as f:
         content = f.read()
         assert "multiply ok" in content
 
@@ -58,8 +61,8 @@ def test_error_console_output(capsys: pytest.CaptureFixture) -> None:
 
 def test_error_file_output(tmp_path: Path) -> None:
     """
-        Тестирование записи ошибок в файл.
-        """
+    Тестирование записи ошибок в файл.
+    """
     log_file = tmp_path / "error_log.txt"
 
     @log(filename=str(log_file))
@@ -72,7 +75,7 @@ def test_error_file_output(tmp_path: Path) -> None:
     # Добавляем отладочную информацию
     assert log_file.exists(), "Файл лога не был создан"
 
-    with open(log_file, 'r', encoding='utf-8') as f:
+    with open(log_file, "r", encoding="utf-8") as f:
         content = f.read()
         print(f"Содержимое файла лога:\n{content}")  # Выводим содержимое для отладки
 
@@ -110,7 +113,7 @@ def test_multiple_calls_same_file(tmp_path: Path) -> None:
     simple_func(1)
     simple_func(2)
 
-    with open(log_file, 'r') as f:
+    with open(log_file, "r") as f:
         content = f.read()
         assert content.count("simple_func ok") == 2
 

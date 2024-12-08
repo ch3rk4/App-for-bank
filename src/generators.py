@@ -20,7 +20,7 @@ def filter_by_currency(transactions: List[Transaction], cur: str) -> Iterator[Tr
 
 def transaction_descriptions(transactions: List[Transaction], cur: str) -> Iterator[str]:
     """
-     Функция выводит типы валютных операций.
+    Функция выводит типы валютных операций.
     """
     if not cur.isupper():
         return iter([])  # type: ignore
