@@ -21,6 +21,6 @@ def convert_to_rubles(transaction: Dict[str, Any]) -> float:
         response = requests.get(f"{BASE_URL}", params={"access_key": API_KEY, "base": currency, "symbols": "RUB"})
         data = response.json()
         rate = data["rates"]["RUB"]
-        return amount * rate
+        return amount * rate #type: ignore
     except Exception as e:
         raise ValueError(f"Failed to convert currency: {str(e)}")
