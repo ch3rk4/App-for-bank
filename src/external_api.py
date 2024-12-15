@@ -11,6 +11,9 @@ BASE_URL = "http://api.exchangeratesapi.io/v1/latest"
 
 
 def convert_to_rubles(transaction: Dict[str, Any]) -> float:
+    """
+    Функция, которая принимает на вход транзакцию и возвращает сумму транзакции в рублях
+    """
     amount = float(transaction["operationAmount"]["amount"])
     currency = transaction["operationAmount"]["currency"]["code"]
 
