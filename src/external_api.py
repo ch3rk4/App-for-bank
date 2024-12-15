@@ -1,11 +1,12 @@
 import os
+from typing import Any, Dict
+
 import requests
-from typing import Dict, Any
 from dotenv import load_dotenv
 
 load_dotenv()
 
-API_KEY = os.getenv('EXCHANGE_RATE_API_KEY')
+API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
 BASE_URL = "http://api.exchangeratesapi.io/v1/latest"
 
 
@@ -17,14 +18,7 @@ def convert_to_rubles(transaction: Dict[str, Any]) -> float:
         return amount
 
     try:
-        response = requests.get(
-            f"{BASE_URL}",
-            params={
-                "access_key": API_KEY,
-                "base": currency,
-                "symbols": "RUB"
-            }
-        )
+        response = requests.get(f"{BASE_URL}", params={"access_key": API_KEY, "base": currency, "symbols": "RUB"})
         data = response.json()
         rate = data["rates"]["RUB"]
         return amount * rate

@@ -1,5 +1,6 @@
 import json
 from unittest import TestCase, mock
+
 from src.utils import load_operations
 
 
@@ -24,7 +25,7 @@ class TestUtils(TestCase):
         """
         Тест успешного сценария
         """
-        with mock.patch('builtins.open', mock.mock_open(read_data=json.dumps(self.test_data))):
+        with mock.patch("builtins.open", mock.mock_open(read_data=json.dumps(self.test_data))):
             result = load_operations("dummy_path.json")
             self.assertEqual(result, self.test_data)
 
@@ -32,7 +33,7 @@ class TestUtils(TestCase):
         """
         Тест пустого файла
         """
-        with mock.patch('builtins.open', mock.mock_open(read_data="")):
+        with mock.patch("builtins.open", mock.mock_open(read_data="")):
             result = load_operations("dummy_path.json")
             self.assertEqual(result, [])
 
@@ -40,7 +41,7 @@ class TestUtils(TestCase):
         """
         Тест некорректного JSON-файла
         """
-        with mock.patch('builtins.open', mock.mock_open(read_data="invalid json")):
+        with mock.patch("builtins.open", mock.mock_open(read_data="invalid json")):
             result = load_operations("dummy_path.json")
             self.assertEqual(result, [])
 
@@ -48,7 +49,7 @@ class TestUtils(TestCase):
         """
         Тест файла с пустым списком
         """
-        with mock.patch('builtins.open', mock.mock_open(read_data='{"key": "value"}')):
+        with mock.patch("builtins.open", mock.mock_open(read_data='{"key": "value"}')):
             result = load_operations("dummy_path.json")
             self.assertEqual(result, [])
 

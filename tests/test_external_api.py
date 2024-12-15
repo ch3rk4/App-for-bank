@@ -1,4 +1,5 @@
 from unittest import TestCase, mock
+
 from src.external_api import convert_to_rubles
 
 
@@ -7,28 +8,16 @@ class TestExternalAPI(TestCase):
         """
         Пример транзакций
         """
-        self.usd_transaction = {
-            "operationAmount": {
-                "amount": "100.00",
-                "currency": {"name": "USD", "code": "USD"}
-            }
-        }
+        self.usd_transaction = {"operationAmount": {"amount": "100.00", "currency": {"name": "USD", "code": "USD"}}}
 
-        self.rub_transaction = {
-            "operationAmount": {
-                "amount": "100.00",
-                "currency": {"name": "руб.", "code": "RUB"}
-            }
-        }
+        self.rub_transaction = {"operationAmount": {"amount": "100.00", "currency": {"name": "руб.", "code": "RUB"}}}
 
-    @mock.patch('src.external_api.requests.get')
+    @mock.patch("src.external_api.requests.get")
     def test_convert_usd_to_rubles(self, mock_get: mock.MagicMock) -> None:
         """
         Тест перевода из USD в RUB
         """
-        mock_get.return_value.json.return_value = {
-            "rates": {"RUB": 75.0}
-        }
+        mock_get.return_value.json.return_value = {"rates": {"RUB": 75.0}}
         result = convert_to_rubles(self.usd_transaction)
         self.assertEqual(result, 7500.0)
 
@@ -39,7 +28,7 @@ class TestExternalAPI(TestCase):
         result = convert_to_rubles(self.rub_transaction)
         self.assertEqual(result, 100.0)
 
-    @mock.patch('src.external_api.requests.get')
+    @mock.patch("src.external_api.requests.get")
     def test_api_error(self, mock_get: mock.MagicMock) -> None:
         """
         Тест обработки ошибок API
