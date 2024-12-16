@@ -1,5 +1,7 @@
 from unittest import TestCase, mock
 
+import requests
+
 from src.external_api import convert_to_rubles
 
 
@@ -30,9 +32,18 @@ class TestExternalAPI(TestCase):
 
     @mock.patch("src.external_api.requests.get")
     def test_api_error(self, mock_get: mock.MagicMock) -> None:
-        """
-        Тест обработки ошибок API
-        """
-        mock_get.side_effect = Exception("API Error")
+        """Тест обработки ошибок API"""
+        # Теперь используем правильный тип исключения
+        mock_get.side_effect = requests.RequestException("API Error")
+
+        with self.assertRaises(ValueError):
+            convert_to_rubles(self.usd_transaction)
+
+    @mock.patch("src.external_api.requests.get")
+    def test_invalid_response_format(self, mock_get: mock.MagicMock) -> None:
+        """Тест обработки некорректного формата ответа"""
+        mock_get.return_value.json.return_value = {"incorrect": "format"}
+        mock_get.return_value.raise_for_status = mock.Mock()
+
         with self.assertRaises(ValueError):
             convert_to_rubles(self.usd_transaction)
