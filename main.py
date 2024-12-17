@@ -20,11 +20,11 @@ filter_ = filter_by_state(test_operations)
 print(sort_by_date(filter_))  # type: ignore
 """
 
-from src.masks import get_mask_card_number, get_mask_account
+from src.masks import get_mask_account, get_mask_card_number
 from src.utils import load_operations
 
 
-def process_operations():
+def process_operations()-> None:
     """
     Основная функция для обработки и вывода операций
     """
