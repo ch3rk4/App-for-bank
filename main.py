@@ -1,4 +1,5 @@
-from src.processing import filter_by_state, sort_by_date
+"""
+ src.processing import filter_by_state, sort_by_date
 from src.widget import get_date, mask_account_card
 
 card_date = str(input("Введите данные: "))
@@ -17,3 +18,5 @@ test_operations = [
 filter_ = filter_by_state(test_operations)
 
 print(sort_by_date(filter_))  # type: ignore
+"""
+
