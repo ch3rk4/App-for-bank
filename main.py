@@ -20,3 +20,62 @@ filter_ = filter_by_state(test_operations)
 print(sort_by_date(filter_))  # type: ignore
 """
 
+from src.masks import get_mask_card_number, get_mask_account
+from src.utils import load_operations
+
+
+def process_operations():
+    """
+    Основная функция для обработки и вывода операций
+    """
+    operations = load_operations("data/operations.json")
+
+    if not operations:
+        print("Операции не найдены")
+        return
+
+    successful_operations = [op for op in operations if op.get("state") == "EXECUTED"]
+    recent_operations = sorted(successful_operations, key=lambda x: x.get("date", ""), reverse=True)[:5]
+
+    for operation in recent_operations:
+        date_str = operation.get("date", "").split("T")[0]
+        date_parts = date_str.split("-")
+        if len(date_parts) == 3:
+            formatted_date = f"{date_parts[2]}.{date_parts[1]}.{date_parts[0]}"
+        else:
+            formatted_date = "Дата не указана"
+
+        description = operation.get("description", "Операция")
+
+        from_account = operation.get("from_", "")
+        if from_account:
+            parts = from_account.split()
+            if "Счет" in from_account:
+                masked_from = f"{' '.join(parts[:-1])} {get_mask_account(parts[-1])}"
+            else:
+                masked_from = f"{' '.join(parts[:-1])} {get_mask_card_number(parts[-1])}"
+        else:
+            masked_from = "Отправитель не указан"
+
+        to_account = operation.get("to", "")
+        if to_account:
+            parts = to_account.split()
+            if "Счет" in to_account:
+                masked_to = f"{' '.join(parts[:-1])} {get_mask_account(parts[-1])}"
+            else:
+                masked_to = f"{' '.join(parts[:-1])} {get_mask_card_number(parts[-1])}"
+        else:
+            masked_to = "Получатель не указан"
+
+        operation_amount = operation.get("operationAmount", {})
+        amount = operation_amount.get("amount", "0")
+        currency = operation_amount.get("currency", {}).get("name", "")
+
+        print(f"{formatted_date} {description}")
+        print(f"{masked_from} -> {masked_to}")
+        print(f"{amount} {currency}")
+        print()
+
+
+if __name__ == "__main__":
+    process_operations()
