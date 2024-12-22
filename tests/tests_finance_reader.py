@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import mock_open, patch
+import pandas as pd
 import pytest
 from src.finance_reader.readers import read_transactions_csv, read_transactions_excel
 from src.finance_reader.types import Transaction
@@ -13,10 +14,13 @@ def sample_csv_content():
 
 @pytest.fixture
 def expected_transaction() -> Transaction:
+    """
+    Фикстура, возвращающая ожидаемую транзакцию с правильной датой в UTC.
+    """
     return {
         'id': '650703',
         'state': 'EXECUTED',
-        'date': datetime(2023, 9, 5, 11, 30, 32),
+        'date': datetime(2023, 9, 5, 11, 30, 32, tzinfo=timezone.utc),  # Добавили UTC
         'amount': 16210.0,
         'currency_name': 'Sol',
         'currency_code': 'PEN',
