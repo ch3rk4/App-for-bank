@@ -1,10 +1,12 @@
-from typing import TypedDict, Literal
 from datetime import datetime
+from typing import Literal, TypedDict
+
 
 class Transaction(TypedDict):
     """Структура финансовой операции."""
+
     id: str
-    state: Literal['EXECUTED', 'CANCELED']
+    state: Literal["EXECUTED", "CANCELED"]
     date: datetime
     amount: float
     currency_name: str

@@ -36,7 +36,7 @@ def convert_to_rubles(transaction: Dict[str, Any]) -> float:
 
         try:
             rate = data["rates"]["RUB"]
-            return amount * rate #type: ignore
+            return amount * rate  # type: ignore
         except KeyError:
             raise ValueError("Failed to get RUB rate from API response")
 

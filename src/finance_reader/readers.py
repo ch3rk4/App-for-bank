@@ -1,7 +1,9 @@
 import csv
 from datetime import datetime
 from typing import List
+
 import pandas as pd
+
 from .types import Transaction
 
 
@@ -12,19 +14,19 @@ def read_transactions_csv(file_path: str) -> List[Transaction]:
     transactions: List[Transaction] = []
 
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            reader = csv.DictReader(file, delimiter=';')
+        with open(file_path, "r", encoding="utf-8") as file:
+            reader = csv.DictReader(file, delimiter=";")
             for row in reader:
                 transaction: Transaction = {
-                    'id': row['id'],
-                    'state': row['state'],
-                    'date': datetime.fromisoformat(row['date'].replace('Z', '+00:00')),
-                    'amount': float(row['amount']),
-                    'currency_name': row['currency_name'],
-                    'currency_code': row['currency_code'],
-                    'from_account': row['from'],
-                    'to_account': row['to'],
-                    'description': row['description']
+                    "id": row["id"],
+                    "state": row["state"],
+                    "date": datetime.fromisoformat(row["date"].replace("Z", "+00:00")),
+                    "amount": float(row["amount"]),
+                    "currency_name": row["currency_name"],
+                    "currency_code": row["currency_code"],
+                    "from_account": row["from"],
+                    "to_account": row["to"],
+                    "description": row["description"],
                 }
                 transactions.append(transaction)
     except FileNotFoundError:
@@ -45,15 +47,15 @@ def read_transactions_excel(file_path: str) -> List[Transaction]:
 
         for _, row in df.iterrows():
             transaction: Transaction = {
-                'id': str(row['id']),
-                'state': row['state'],
-                'date': datetime.fromisoformat(row['date'].replace('Z', '+00:00')),
-                'amount': float(row['amount']),
-                'currency_name': row['currency_name'],
-                'currency_code': row['currency_code'],
-                'from_account': row['from'],
-                'to_account': row['to'],
-                'description': row['description']
+                "id": str(row["id"]),
+                "state": row["state"],
+                "date": datetime.fromisoformat(row["date"].replace("Z", "+00:00")),
+                "amount": float(row["amount"]),
+                "currency_name": row["currency_name"],
+                "currency_code": row["currency_code"],
+                "from_account": row["from"],
+                "to_account": row["to"],
+                "description": row["description"],
             }
             transactions.append(transaction)
 
