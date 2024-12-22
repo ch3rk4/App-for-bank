@@ -19,7 +19,7 @@ def read_transactions_csv(file_path: str) -> List[Transaction]:
             for row in reader:
                 transaction: Transaction = {
                     "id": row["id"],
-                    "state": row["state"],
+                    "state": row["state"], #type: ignore
                     "date": datetime.fromisoformat(row["date"].replace("Z", "+00:00")),
                     "amount": float(row["amount"]),
                     "currency_name": row["currency_name"],
