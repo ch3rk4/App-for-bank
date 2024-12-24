@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from src.finance_reader.readers import read_transactions_csv, read_transactions_excel
 from src.finance_reader.types import Transaction
@@ -14,26 +14,38 @@ def get_transactions_from_file(file_type: int, file_path: str) -> Optional[List[
     try:
         if file_type == 1:
             transactions = load_operations(file_path)
-            # Преобразуем строковые даты в datetime объекты
-            for transaction in transactions:
-                if isinstance(transaction["date"], str):
-                    transaction["date"] = datetime.strptime(transaction["date"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
-                # Также нужно правильно обработать поля from_ и from
-                if "from_" in transaction:
-                    transaction["from_account"] = transaction.pop("from_")
-                if "to" in transaction:
-                    transaction["to_account"] = transaction.pop("to")
-            return transactions
+            # Преобразуем загруженные данные в формат Transaction
+            return [
+                Transaction(
+                    id=str(tr["id"]),
+                    state=tr["state"],
+                    date=datetime.fromisoformat(tr["date"].replace("Z", "+00:00")),
+                    amount=float(tr["amount"]),
+                    currency_name=tr["currency_name"],
+                    currency_code=tr["currency_code"],
+                    from_account=tr.get("from_", ""),
+                    to_account=tr.get("to", ""),
+                    description=tr["description"],
+                )
+                for tr in transactions
+            ]
         elif file_type == 2:
             return read_transactions_csv(file_path)
         elif file_type == 3:
             return read_transactions_excel(file_path)
-        else:
-            print("Неверный тип файла")
-            return None
+        return None
     except Exception as e:
         print(f"Ошибка при чтении файла: {str(e)}")
         return None
+
+
+def format_amount_and_currency(transaction: Transaction) -> Tuple[str, str]:
+    """
+    Форматирует сумму и валюту транзакции для вывода пользователю.
+    """
+    amount = str(transaction["amount"])
+    currency = transaction["currency_name"]
+    return amount, currency
 
 
 def filter_by_status(transactions: List[Transaction], status: str) -> List[Transaction]:
@@ -58,17 +70,25 @@ def main() -> None:
         print("3. Получить информацию о транзакциях из XLSX-файла")
 
         try:
-            choice = input("\nПользователь: ").strip()
-            if not choice.isdigit() or int(choice) not in [1, 2, 3]:
+            choice_input = input("\nПользователь: ").strip()
+            if not choice_input.isdigit():
+                print("Пожалуйста, введите число от 1 до 3")
+                continue
+
+            choice = int(choice_input)  # преобразуем строку в число
+            if choice not in [1, 2, 3]:
                 print("Пожалуйста, выберите число от 1 до 3")
                 continue
 
-            choice = int(choice)
-            file_paths = {1: "data/operations.json", 2: "data/transactions.csv", 3: "data/transactions_excel.xlsx"}
+            file_paths: dict[int, str] = {  # явно указываем типы ключей и значений словаря
+                1: "data/operations.json",
+                2: "data/transactions.csv",
+                3: "data/transactions_excel.xlsx",
+            }
 
             print(f"\nПрограмма: Для обработки выбран {['JSON', 'CSV', 'XLSX'][choice - 1]}-файл.")
-
             transactions = get_transactions_from_file(choice, file_paths[choice])
+
             if not transactions:
                 print("Не удалось загрузить транзакции. Попробуйте другой файл.")
                 continue
@@ -104,7 +124,7 @@ def main() -> None:
                     ]
 
                 search_choice = input(
-                    "\nПрограмма: Отфильтровать список транзакций по типу операции в описании? Да/Нет\n\nПользователь: "
+                    "\nПрограмма: Отфильтровать список транзакций по типу операции в описании? Да/Нет\nПользователь: "
                 ).lower()
                 if search_choice in ["да", "y", "yes"]:
                     print("\nПрограмма: Введите тип операции для поиска.")
@@ -121,8 +141,11 @@ def main() -> None:
                         print(f"{tr['date'].strftime('%d.%m.%Y')} {tr['description']}")
                         from_account = tr.get("from_account", "")
                         to_account = tr.get("to_account", "")
-                        amount = tr.get("operationAmount", {}).get("amount", "0")
-                        currency = tr.get("operationAmount", {}).get("currency", {}).get("name", "")
+                        for tr in filtered_transactions:
+                            amount, currency = format_amount_and_currency(tr)
+                            print(f"{tr['date'].strftime('%d.%m.%Y')} {tr['description']}")
+                            print(f"{tr['from_account']} -> {tr['to_account']}")
+                            print(f"Сумма: {amount} {currency}\n")
                         print(f"{from_account} -> {to_account}")
                         print(f"Сумма: {amount} {currency}\n")
 
