@@ -1,8 +1,10 @@
-from typing import List
 from datetime import datetime
+from typing import List
+
 import pytest
+
 from src.finance_reader.types import Transaction
-from src.transaction_processor import search_transactions, count_categories
+from src.transaction_processor import count_categories, search_transactions
 
 
 @pytest.fixture
@@ -20,7 +22,7 @@ def transactions() -> List[Transaction]:
             "currency_code": "RUB",
             "description": "Перевод организации",
             "from_account": "Счет 1234567890123456",
-            "to_account": "Счет 0987654321098765"
+            "to_account": "Счет 0987654321098765",
         },
         {
             "id": "2",
@@ -31,7 +33,7 @@ def transactions() -> List[Transaction]:
             "currency_code": "RUB",
             "description": "Открытие вклада",
             "from_account": "",
-            "to_account": "Счет 1234567890123456"
+            "to_account": "Счет 1234567890123456",
         },
         {
             "id": "3",
@@ -42,8 +44,8 @@ def transactions() -> List[Transaction]:
             "currency_code": "USD",
             "description": "Перевод с карты на счет",
             "from_account": "Visa 1234 56** **** 7890",
-            "to_account": "Счет 0987654321098765"
-        }
+            "to_account": "Счет 0987654321098765",
+        },
     ]
 
 

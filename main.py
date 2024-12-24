@@ -1,9 +1,10 @@
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
 from src.finance_reader.readers import read_transactions_csv, read_transactions_excel
-from src.utils import load_operations
-from src.transaction_processor import search_transactions
 from src.finance_reader.types import Transaction
+from src.transaction_processor import search_transactions
+from src.utils import load_operations
 
 
 def get_transactions_from_file(file_type: int, file_path: str) -> Optional[List[Transaction]]:
@@ -16,10 +17,7 @@ def get_transactions_from_file(file_type: int, file_path: str) -> Optional[List[
             # Преобразуем строковые даты в datetime объекты
             for transaction in transactions:
                 if isinstance(transaction["date"], str):
-                    transaction["date"] = datetime.strptime(
-                        transaction["date"].split(".")[0],
-                        "%Y-%m-%dT%H:%M:%S"
-                    )
+                    transaction["date"] = datetime.strptime(transaction["date"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
                 # Также нужно правильно обработать поля from_ и from
                 if "from_" in transaction:
                     transaction["from_account"] = transaction.pop("from_")
@@ -66,11 +64,7 @@ def main() -> None:
                 continue
 
             choice = int(choice)
-            file_paths = {
-                1: "data/operations.json",
-                2: "data/transactions.csv",
-                3: "data/transactions_excel.xlsx"
-            }
+            file_paths = {1: "data/operations.json", 2: "data/transactions.csv", 3: "data/transactions_excel.xlsx"}
 
             print(f"\nПрограмма: Для обработки выбран {['JSON', 'CSV', 'XLSX'][choice - 1]}-файл.")
 
@@ -85,31 +79,34 @@ def main() -> None:
 
                 status = input("\nПользователь: ").upper()
                 if status not in ["EXECUTED", "CANCELED"]:
-                    print(f"\nПрограмма: Статус операции \"{status}\" недоступен.")
+                    print(f'\nПрограмма: Статус операции "{status}" недоступен.')
                     continue
 
                 filtered_transactions = filter_by_status(transactions, status)
-                print(f"\nПрограмма: Операции отфильтрованы по статусу \"{status}\"")
+                print(f'\nПрограмма: Операции отфильтрованы по статусу "{status}"')
 
                 sort_choice = input("\nПрограмма: Отсортировать операции по дате? Да/Нет\n\nПользователь: ").lower()
-                if sort_choice in ['да', 'y', 'yes']:
+                if sort_choice in ["да", "y", "yes"]:
                     sort_direction = input(
-                        "\nПрограмма: Отсортировать по возрастанию или по убыванию?\n\nПользователь: ").lower()
+                        "\nПрограмма: Отсортировать по возрастанию или по убыванию?\n\nПользователь: "
+                    ).lower()
                     filtered_transactions.sort(
                         key=lambda x: x["date"],
-                        reverse=(sort_direction.startswith('у') or sort_direction.startswith('d'))
+                        reverse=(sort_direction.startswith("у") or sort_direction.startswith("d")),
                     )
 
                 rub_only = input("\nПрограмма: Выводить только рублевые транзакции? Да/Нет\n\nПользователь: ").lower()
-                if rub_only in ['да', 'y', 'yes']:
+                if rub_only in ["да", "y", "yes"]:
                     filtered_transactions = [
-                        t for t in filtered_transactions
-                        if t.get("operationAmount", {}).get("currency", {}).get("code") == "RUB" #type: ignore
+                        t
+                        for t in filtered_transactions
+                        if t.get("operationAmount", {}).get("currency", {}).get("code") == "RUB"  # type: ignore
                     ]
 
                 search_choice = input(
-                    "\nПрограмма: Отфильтровать список транзакций по типу операции в описании? Да/Нет\n\nПользователь: ").lower()
-                if search_choice in ['да', 'y', 'yes']:
+                    "\nПрограмма: Отфильтровать список транзакций по типу операции в описании? Да/Нет\n\nПользователь: "
+                ).lower()
+                if search_choice in ["да", "y", "yes"]:
                     print("\nПрограмма: Введите тип операции для поиска.")
                     print("Например: 'перевод', 'вклад', 'оплата' и т.д.")
                     search_word = input("\nПрограмма: ")

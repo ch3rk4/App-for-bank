@@ -67,16 +67,16 @@ def read_transactions_excel(file_path: str) -> List[Transaction]:
         df = pd.read_excel(
             file_path,
             dtype={
-                'id': str,
-                'state': str,
-                'date': str,
-                'amount': float,
-                'currency_name': str,
-                'currency_code': str,
-                'from': str,
-                'to': str,
-                'description': str
-            }
+                "id": str,
+                "state": str,
+                "date": str,
+                "amount": float,
+                "currency_name": str,
+                "currency_code": str,
+                "from": str,
+                "to": str,
+                "description": str,
+            },
         )
 
         transactions: List[Transaction] = []
@@ -110,7 +110,7 @@ def read_transactions_excel(file_path: str) -> List[Transaction]:
                 "currency_code": str(row["currency_code"]),
                 "from_account": str(row["from"]),
                 "to_account": str(row["to"]),
-                "description": str(row["description"])
+                "description": str(row["description"]),
             }
             transactions.append(transaction)
 

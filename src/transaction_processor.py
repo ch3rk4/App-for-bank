@@ -1,6 +1,6 @@
-from typing import List, Dict
 import re
 from collections import Counter
+from typing import Dict, List
 
 
 def search_transactions(transactions: List[Dict], search_string: str) -> List[Dict]:
@@ -11,10 +11,7 @@ def search_transactions(transactions: List[Dict], search_string: str) -> List[Di
         return transactions
 
     pattern = re.compile(search_string, re.IGNORECASE)
-    return [
-        transaction for transaction in transactions
-        if pattern.search(transaction.get("description", ""))
-    ]
+    return [transaction for transaction in transactions if pattern.search(transaction.get("description", ""))]
 
 
 def count_categories(transactions: List[Dict], categories: List[str]) -> Dict[str, int]:
@@ -25,8 +22,7 @@ def count_categories(transactions: List[Dict], categories: List[str]) -> Dict[st
         return {cat: 0 for cat in categories} if categories else {}
 
     counts = Counter(
-        transaction.get("description") for transaction in transactions
-        if transaction.get("description") in categories
+        transaction.get("description") for transaction in transactions if transaction.get("description") in categories
     )
 
     return {cat: counts.get(cat, 0) for cat in categories}
