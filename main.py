@@ -56,6 +56,27 @@ def filter_by_status(transactions: List[Transaction], status: str) -> List[Trans
     return [t for t in transactions if t.get("state", "").upper() == normalized_status]
 
 
+def process_search_query(transactions: List[Transaction], show_prompt: bool = True) -> List[Transaction]:
+    """
+    Обрабатывает поисковый запрос пользователя.
+    """
+    if show_prompt:
+        print("\nПрограмма: Для поиска транзакций введите текст.")
+        print("Поиск осуществляется по описанию операции.")
+        print("Примеры: 'перевод', 'оплата', 'открытие вклада'")
+
+    search_text = input("\nПрограмма: Введите текст для поиска: ").strip()
+
+    filtered_transactions = search_transactions(transactions, search_text)
+
+    if filtered_transactions:
+        print(f"\nПрограмма: Найдено операций: {len(filtered_transactions)}")
+    else:
+        print("\nПрограмма: По вашему запросу ничего не найдено")
+
+    return filtered_transactions
+
+
 def main() -> None:
     """
     Основная функция программы, реализующая взаимодействие с пользователем
@@ -104,6 +125,14 @@ def main() -> None:
 
                 filtered_transactions = filter_by_status(transactions, status)
                 print(f'\nПрограмма: Операции отфильтрованы по статусу "{status}"')
+
+                search_choice = input(
+                    "\nПрограмма: Выполнить поиск по описанию операций? Да/Нет\n\nПользователь: ").lower()
+                if search_choice in ['да', 'y', 'yes']:
+                    filtered_transactions = process_search_query(filtered_transactions)
+                    if not filtered_transactions:
+                        # Если ничего не найдено, даем пользователю возможность начать сначала
+                        continue
 
                 sort_choice = input("\nПрограмма: Отсортировать операции по дате? Да/Нет\n\nПользователь: ").lower()
                 if sort_choice in ["да", "y", "yes"]:

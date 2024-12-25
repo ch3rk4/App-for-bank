@@ -12,8 +12,21 @@ def search_transactions(transactions: List[Transaction], search_string: str) -> 
     if not search_string:
         return transactions
 
-    pattern = re.compile(search_string, re.IGNORECASE)
-    return [transaction for transaction in transactions if pattern.search(transaction["description"])]
+    try:
+        # Создаем регулярное выражение с игнорированием регистра
+        pattern = re.compile(search_string, re.IGNORECASE)
+
+        # Фильтруем транзакции, ищем совпадения в описании
+        filtered_transactions = [
+            transaction for transaction in transactions
+            if pattern.search(transaction["description"])
+        ]
+
+        return filtered_transactions
+
+    except re.error:
+        # В случае некорректного регулярного выражения возвращаем пустой список
+        return []
 
 
 def count_categories(transactions: List[Transaction], categories: List[str]) -> dict[str, int]:
